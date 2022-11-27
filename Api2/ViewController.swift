@@ -16,9 +16,7 @@ class ViewController: UIViewController {
     
     let urlPhoto = URL(string: "https://jsonplaceholder.typicode.com/photos")!
     let urlUser = URL(string: "https://jsonplaceholder.typicode.com/users")!
-//    var newArrayPhotos: ArraySlice<Photos> = []
-//    var newArrayUser: ArraySlice<User> = []
-    var finalPhotos:FinalPhotos?
+    var finalPhotos:[FinalPhotos] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -34,32 +32,39 @@ class ViewController: UIViewController {
                     
             var request = URLRequest(url: url)
             request.httpMethod = "GET"
-                let task = URLSession.shared.dataTask(with: request) { [ weak self] data, response, error in
+                let task = URLSession.shared.dataTask(with: request) {  data, response, error in
+                    
+                    guard let data = data else{return}
+                    var finalData:[Photos] = []
+                    var finalData2:[User] = []
+                    do {
+                        finalData = try JSONDecoder().decode([Photos].self , from:  data)
+//                        var newArrayPhotos = finalData.prefix(through: 9)
+//                        print (newArrayPhotos.count)
                         
-                guard let data = data else{return}
-
-                 do {
-                     let finalData = try JSONDecoder().decode([FinalPhotos].self , from:  data)
-//                     print(finalData.first?.albumId)
-
-                    var newArrayPhotos = finalData.prefix(through: 9)
-//                     print (newArrayPhotos.count)
-
-                 } catch {
-                    print(error)
-                        }
-  
-                do {
-                    let finalData2 = try JSONDecoder().decode([User].self , from:  data)
-
-                    var newArrayUser = finalData2.prefix(through: 9)
-//                     print (newArrayUser.count)
-
-                } catch {
-                   print(error)
-                       }
-                        
+                    } catch {
+                        print(error)
                     }
+//                    print(finalData)
+                    do {
+                        let finalData2 = try JSONDecoder().decode([User].self , from:  data)
+                        
+//                        var newArrayUser = finalData2.prefix(through: 9)
+//                        print (newArrayUser.count)
+                        
+                    } catch {
+                        print(error)
+                    }
+                  
+                    self.finalPhotos = finalData2.enumerated().map{
+                        return FinalPhotos(albumId: finalData[$0.offset].albumId,
+                                           id: $0.element,
+                                           title: finalData[$0.offset].title,
+                                           url: finalData[$0.offset].url,
+                                           thumbnailUrl: finalData[$0.offset].thumbnailUrl)
+      
+                    print(self.finalPhotos.first?.title)
+                }
                     task.resume()
 
                     group.leave()
@@ -71,6 +76,6 @@ class ViewController: UIViewController {
               group.notify(queue: .main){
                   print("All uploaded")
               }
-        
+    
     }
 }

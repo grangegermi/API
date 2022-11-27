@@ -8,12 +8,12 @@
 import Foundation
 
 
-struct FinalPhotos:Decodable {
+struct FinalPhotos:Codable {
     
-    let albumId:Int
     let id: User
+    let albumId: Int
     let title: String
-    let url: URL
+    let url : URL
     let thumbnailUrl: URL
     
 }
@@ -26,16 +26,18 @@ struct FinalPhotos:Decodable {
 //   "thumbnailUrl": "https://via.placeholder.com/150/92c952"
 // }
 
-struct  Photos:Decodable {
-    
+
+struct Photos:Decodable {
+
     let albumId:Int
     let id: Int
     let title: String
     let url: URL
     let thumbnailUrl: URL
-    
-    
+
+
 }
+
 
 //
 //{
@@ -62,8 +64,9 @@ struct  Photos:Decodable {
 //   }
 // },
 
-struct User:Decodable {
-    
+
+struct User:Codable {
+
     let id:Int
     let name:String
     let username :String
@@ -72,11 +75,11 @@ struct User:Decodable {
     let phone:String
     let website:String
     let company:Company
-    
+
 }
 
-struct Adress:Decodable{
-    
+struct Adress:Codable{
+
     let street:String
     let suite:String
     let city:String
@@ -84,14 +87,14 @@ struct Adress:Decodable{
     let geo:Geo
 }
 
-struct Geo:Decodable{
+struct Geo:Codable{
     let lat: String
     let lng:String
 }
 
-struct Company:Decodable{
+struct Company:Codable{
     let name:String
     let catchPhrase:String
     let bs:String
-    
+
 }

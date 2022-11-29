@@ -14,7 +14,7 @@ import UIKit
 import SnapKit
 import SDWebImage
 
-class ViewController: UIViewController, UITableViewDelegate,UITableViewDataSource {
+class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
     var model = Model()
 
@@ -23,36 +23,34 @@ class ViewController: UIViewController, UITableViewDelegate,UITableViewDataSourc
     override func viewDidLoad() {
         super.viewDidLoad()
         
+       
+       
+        tableView.dataSource = self
+        tableView.delegate = self
         view.addSubview(tableView)
+        createConstraints()
         
         //        navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "plus"), style: .plain, target: self, action: #selector(buttonTap))
         tableView.register(TableViewCell.self, forCellReuseIdentifier: TableViewCell.id)
-        //        tableView.register(TableViewCell.nib, forHeaderFooterViewReuseIdentifier: TableViewCell.id)
-        model.createPhoto()
-//        model.createUser()
-//        model.createFinalPhoto()
         
+     
+            self.model.viewController = self
+            self.model.createPhoto()
+
+    }
+    
+    func createConstraints (){
         tableView.snp.makeConstraints { make in
             make.left.equalToSuperview()
             make.right.equalToSuperview()
             make.bottom.equalToSuperview()
             make.top.equalToSuperview()
         }
-        tableView.dataSource = self
-        tableView.delegate = self
-    
-        tableView.reloadData()
     }
-    
-    
-        
-        
 
-     
-        
         func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-            
-            model.tenFinalPhotos.count
+//
+            return   model.tenFinalPhotos.count
 
             
         }
@@ -60,9 +58,13 @@ class ViewController: UIViewController, UITableViewDelegate,UITableViewDataSourc
         
         func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
             let cell = tableView.dequeueReusableCell(withIdentifier: TableViewCell.id, for: indexPath) as! TableViewCell
-       
-            cell.label.text = model.tenFinalPhotos[indexPath.row].id.name
-            cell.viewImage.sd_setImage(with: model.tenFinalPhotos[indexPath.row].url)
+//
+      
+                cell.label.text = self.model.tenFinalPhotos[indexPath.row].id.name
+                cell.viewImage.sd_setImage(with: self.model.tenFinalPhotos[indexPath.row].url)
+  
+        
+            
             return cell
         }
         
@@ -126,68 +128,3 @@ class ViewController: UIViewController, UITableViewDelegate,UITableViewDataSourc
 
 
 
-//
-//        var urlArray:[URL] = [urlPhoto, urlUser]
-//        var group = DispatchGroup()
-//        let queueConcurrent = DispatchQueue(label: "urls", attributes: .concurrent)
-//
-//        for url in urlArray {
-//
-//            group.enter()
-//            queueConcurrent.async {
-//
-//                var request = URLRequest(url: url)
-//                request.httpMethod = "GET"
-//                let task = URLSession.shared.dataTask(with: request) { [weak self]  data,  response, error in
-//
-//                    var data = try! Data(contentsOf: url)
-////                    guard let data = data else{return}
-//
-//
-//                    do {
-//                        self?.finalData = try JSONDecoder().decode([Photos].self , from:  data)
-//                        //                       var newArrayPhotos = finalData.prefix(through: 9)
-//                        //                       print (newArrayPhotos.count)
-//
-//                    } catch {
-//                        print(error)
-//                    }
-//                    //                    print(finalData)
-//                    do {
-//
-//                        self?.finalData2 = try JSONDecoder().decode([User].self, from:  data)
-//
-//                        //                        var newArrayUser = finalData2.prefix(through: 9)
-//                        //                        print (newArrayUser.count)
-//
-//                    } catch {
-//                        print(error)
-//                    }
-//
-//                    self?.finalPhotos =  (self?.finalData2.enumerated().map{
-//                        return FinalPhotos(id: $0.element,
-//                                           albumId: (self?.finalData[$0.offset].albumId)!,
-//                                           title: (self?.finalData[$0.offset].title)!,
-//                                           url: (self?.finalData[$0.offset].url)!,
-//                                           thumbnailUrl:(self?.finalData[$0.offset].thumbnailUrl)!)})!
-//
-//                    print(self?.finalPhotos.first?.title)
-//
-//                }
-//                task.resume()
-//
-//                    group.leave()
-//
-//                }
-//                group.wait()
-//            }
-//
-//            group.notify(queue: .main){
-//                print("All uploaded")
-//            }
-//
-//
-//            }
-//
-//}
-//

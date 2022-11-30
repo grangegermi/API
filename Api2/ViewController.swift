@@ -82,8 +82,8 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     }
 //    
     @objc func buttonTap(_ sender:UIButton) {
-        
         model.createPost()
+        model.createPhoto()
         
     }
     
@@ -98,7 +98,10 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             print("delete from server")
 
             self.model.tenFinalPhotos.remove(at: indexPath.row)
-            tableView.reloadData()
+            DispatchQueue.main.async {
+                tableView.reloadData()
+            }
+          
 
          
         }

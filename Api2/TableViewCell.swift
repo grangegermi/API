@@ -13,7 +13,7 @@ class TableViewCell: UITableViewCell {
     var label = UILabel()
     
     static let id = "TableViewCell"
-//    static let nib = UINib(nibName: id, bundle: nil)
+
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -36,10 +36,10 @@ class TableViewCell: UITableViewCell {
     }
     func createconstraints () {
         viewImage.snp.makeConstraints { make in
-            make.left.equalToSuperview()
-            make.right.equalToSuperview()
-            make.top.equalToSuperview().inset(20)
-            make.left.equalToSuperview()
+            make.bottom.equalToSuperview().inset(20)
+            make.left.equalToSuperview().inset(20)
+            make.height.equalTo(50)
+            make.width.equalTo(50)
         }
         
         

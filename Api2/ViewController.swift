@@ -15,28 +15,37 @@ import SnapKit
 import SDWebImage
 
 class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
-
+    
     var model = Model()
-
+    
     var tableView = UITableView()
-  
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
-       
-       
+        
+        
         tableView.dataSource = self
         tableView.delegate = self
+        view.backgroundColor = .yellow
         view.addSubview(tableView)
+        
         createConstraints()
         
-        //        navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "plus"), style: .plain, target: self, action: #selector(buttonTap))
+        
+        navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "plus"), style: .plain, target: self, action: #selector(buttonTap))
+        
         tableView.register(TableViewCell.self, forCellReuseIdentifier: TableViewCell.id)
         
-     
-            self.model.viewController = self
-            self.model.createPhoto()
-
+        
+        self.model.viewController = self
+        self.model.createPhoto()
+        
+    }
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        navigationController?.setNavigationBarHidden(false, animated: animated)
     }
     
     func createConstraints (){
@@ -47,84 +56,55 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             make.top.equalToSuperview()
         }
     }
-
-        func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-//
-            return   model.tenFinalPhotos.count
-
-            
-        }
-        
-        
-        func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-            let cell = tableView.dequeueReusableCell(withIdentifier: TableViewCell.id, for: indexPath) as! TableViewCell
-//
-      
-                cell.label.text = self.model.tenFinalPhotos[indexPath.row].id.name
-                cell.viewImage.sd_setImage(with: self.model.tenFinalPhotos[indexPath.row].url)
-  
-        
-            
-            return cell
-        }
-        
-        func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-            return 200
-        }
-        
-        //        @objc func buttonTap(_ sender:UINavigationBa) {
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         //
-        //
-        //
-        //    }
-        func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-            
-            guard let url = URL(string: "https://jsonplaceholder.typicode.com/photos") else {
-                print("Error: cannot create URL")
-                return
-            }
-            // Create the request
-            var request = URLRequest(url: url)
-            request.httpMethod = "DELETE"
-            URLSession.shared.dataTask(with: request) { data, response, error in
-                guard error == nil else {
-                    print("Error: error calling DELETE")
-                    print(error!)
-                    return
-                }
-                guard let data = data else {
-                    print("Error: Did not receive data")
-                    return
-                }
-                guard let response = response as? HTTPURLResponse, (200 ..< 299) ~= response.statusCode else {
-                    print("Error: HTTP request failed")
-                    return
-                }
-                do {
-                    guard let jsonObject = try JSONSerialization.jsonObject(with: data) as? [String: Any] else {
-                        print("Error: Cannot convert data to JSON")
-                        return
-                    }
-                    guard let prettyJsonData = try? JSONSerialization.data(withJSONObject: jsonObject, options: .prettyPrinted) else {
-                        print("Error: Cannot convert JSON object to Pretty JSON data")
-                        return
-                    }
-                    guard let prettyPrintedJson = String(data: prettyJsonData, encoding: .utf8) else {
-                        print("Error: Could print JSON in String")
-                        return
-                    }
-                    
-                    print(prettyPrintedJson)
-                } catch {
-                    print("Error: Trying to convert JSON data to string")
-                    return
-                }
-            }.resume()
-        }
+        return   model.tenFinalPhotos.count
+        
+        
     }
     
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: TableViewCell.id, for: indexPath) as! TableViewCell
+        //
+        
+        cell.label.text = self.model.tenFinalPhotos[indexPath.row].id.name
+        cell.viewImage.sd_setImage(with: self.model.tenFinalPhotos[indexPath.row].url)
+        
+        
+        
+        return cell
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 100
+    }
+    
+    @objc func buttonTap(_ sender:UIButton) {
+        
+        model.createPost()
+        
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        
+        model.delete(id: model.finalPhotos[indexPath.row].id.id){(error) in
+            if let error = error {
+                print(error)
+                
+                return
+            }
+            print("delete from server")
+            self.model.finalPhotos.remove(at: indexPath.row)
+            print(self.model.finalPhotos.count)
+ 
+                tableView.deleteRows(at:[indexPath], with: .automatic)
+            tableView.endUpdates()
+            tableView.reloadData()
+  
+        }
+    }
 
-
-
-
+}
 

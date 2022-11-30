@@ -76,11 +76,11 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         
         return cell
     }
-    
+
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 100
     }
-    
+//    
     @objc func buttonTap(_ sender:UIButton) {
         
         model.createPost()
@@ -96,13 +96,11 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                 return
             }
             print("delete from server")
-            self.model.finalPhotos.remove(at: indexPath.row)
-            print(self.model.finalPhotos.count)
- 
-                tableView.deleteRows(at:[indexPath], with: .automatic)
-            tableView.endUpdates()
+
+            self.model.tenFinalPhotos.remove(at: indexPath.row)
             tableView.reloadData()
-  
+
+         
         }
     }
 
